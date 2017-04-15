@@ -1,0 +1,21 @@
+body {
+  font-family: sans-serif;
+}
+
+.bar {
+  fill: lightgray;
+}
+.bar:hover {
+  fill: blue;
+}
+
+.tooltip {
+  /*z-index: 1000;*/
+  /*margin-left: 100px;*/
+  position: fixed;
+  display: inline-block;
+}
+
+.container {
+  position: fixed;
+}
