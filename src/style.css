@@ -1,21 +1,38 @@
+html, body {
+  margin: 0;
+}
+
 body {
   font-family: sans-serif;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .bar {
   fill: lightgray;
 }
 .bar:hover {
-  fill: blue;
+  fill: black;
 }
 
+/*svg {
+  position: absolute;
+}*/
 .tooltip {
-  /*z-index: 1000;*/
-  /*margin-left: 100px;*/
-  position: fixed;
-  display: inline-block;
+  z-index: 10;
+  position: absolute;
+
+  background-color: black;
+  color: white;
+  padding: 10px;
 }
 
-.container {
-  position: fixed;
+.tooltip-text {
+  color: white;
+}
+
+title {
+  color: red;
 }
