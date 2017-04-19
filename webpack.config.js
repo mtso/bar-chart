@@ -31,7 +31,7 @@ module.exports = [
         {
           test: /\.jsx?$/,
           exclude: /node_modules/,
-          loader: 'babel-loader'
+          loader: 'babel-loader?presets[]=es2015'
         },
         {
           test: /\.s?[ac]ss$/,
