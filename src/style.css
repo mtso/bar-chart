@@ -1,5 +1,6 @@
 html, body {
   margin: 0;
+  min-width: 1040px;
 }
 
 body {
@@ -10,16 +11,22 @@ body {
   align-items: center;
 }
 
+h1 {
+  display: inline-block;
+}
+
 .bar {
   fill: lightgray;
 }
+
 .bar:hover {
   fill: black;
 }
 
-/*svg {
-  position: absolute;
-}*/
+svg {
+  overflow: visible;
+}
+
 .tooltip {
   z-index: 10;
   position: absolute;

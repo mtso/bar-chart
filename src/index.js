@@ -2,18 +2,18 @@
   const d3 = require('d3')
   const config = require('./config')
   const months = [
-    'January',
-    'February',
-    'March',
-    'April',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
     'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
   ]
 
   function display() {
@@ -30,28 +30,57 @@
       width: 1000,
       height: 600,
     }
-    let padding = 40
+    let padding = 80
 
-    let svg =
-      d3.select('body')
+    let svg = d3.select('body')
         .append('svg')
         .attr('width', size.width)
         .attr('height', size.height)
         .attr('class', 'container')
 
+    svg.append("text")
+      .attr("x", (size.width / 2))
+      .attr("y", padding * 0.7)
+      .attr("text-anchor", "middle")
+      .style("font-size", "19px")
+      .style("font-weight", "bold")
+      .text("Gross Domestic Product");
+
+    svg.append("text")
+      .attr("x", (size.width / 2))
+      .attr("y", size.height - padding * 0.3)
+      .attr("text-anchor", "middle")
+      .style("font-size", "15px")
+      .text("Quarter");
+
+    svg.append("text")
+      .attr("x", (size.width / 2))
+      .attr("y", size.height)
+      .attr("text-anchor", "middle")
+      .style("font-size", "13px")
+      .text("Source: http://www.bea.gov/national/pdf/nipaguid.pdf");
+
+    svg.append("text")
+      .attr('transform', 'translate(' + -padding * 0.85 + ', ' + (size.height + padding) / 2 + ')rotate(-90)')
+      .attr("x", padding)
+      .attr("y", padding)
+      .attr("text-anchor", "middle")
+      .style("font-size", "15px")
+      .text("Billions of Dollars");
+
     let minDate = d3.min(data, d => d.date)
     let maxDate = d3.max(data, d => d.date)
     let xScale = d3.scaleLinear()
                    .domain([minDate, maxDate])
-                   .range([padding, size.width - padding * 3])
+                   .range([padding, size.width - padding])
 
     let yScale = d3.scaleLinear()
                    .domain([d3.min(data, d => d.gdp), d3.max(data, d => d.gdp)])
-                   .range([size.height - padding , padding * 3])
+                   .range([size.height - padding , padding])
 
     let xScaleAxis = d3.scaleLinear()
                    .domain([minDate.getFullYear(), maxDate.getFullYear()])
-                   .range([padding, size.width - padding * 3])
+                   .range([padding, size.width - padding])
 
     let xAxis = d3.axisBottom(xScaleAxis)
     let yAxis = d3.axisLeft(yScale)
@@ -64,11 +93,11 @@
     }
 
     svg.append('g')
-      .attr('transform', 'translate(0, ' + (size.height - padding) + ')')
+      .attr('transform', 'translate(0, ' + (size.height - padding * 0.8) + ')')
       .call(xAxis)
 
     svg.append('g')
-      .attr('transform', 'translate(' + padding + ', 0)')
+      .attr('transform', 'translate(' + padding * 0.8 + ', 0)')
       .call(yAxis)
 
     let bars = svg.selectAll('rect')
@@ -77,87 +106,41 @@
        .append('rect')
 
        .attr('width', (size.width - padding * 2) / data.length)
-       .attr('height', d => size.height - yScale(d.gdp))
+       .attr('height', d => size.height - yScale(d.gdp) - padding)
        .attr('x', d => xScale(d.date))
-       .attr('y', d => yScale(d.gdp) - padding)
+       .attr('y', d => yScale(d.gdp))
        .attr('class', 'bar')
 
 
        .on('mouseover', (d) => {
          tt = svg.append('g')
 
+         let gdpText = '$' + d.gdp + 'B'
+         let quarterText = months[d.date.getUTCMonth()] + ' ' + d.date.getFullYear()
+         let tooltipWidth = Math.max(gdpText.length, quarterText.length) * 10
+
          tt.append('rect')
            .attr('x', xScale(d.date))
-           .attr('y', yScale(d.gdp) - padding * 2)
-           .attr('width', 100)
+           .attr('y', yScale(d.gdp) - ttsize.height)
+           .attr('width', tooltipWidth)
            .attr('height', 40)
            .attr('fill', 'black')
 
          tt.append('text')
-           .text(d.gdp)
+           .text(gdpText)
            .attr('x', xScale(d.date) + 5)
-           .attr('y', yScale(d.gdp) - 24 - padding)
+           .attr('y', yScale(d.gdp) - ttsize.height * 0.6)
            .attr('fill', 'white')
 
          tt.append('text')
-           .text(d.date.getFullYear())
+           .text(quarterText)
            .attr('x', xScale(d.date) + 5)
-           .attr('y', yScale(d.gdp) - 10 - padding)
+           .attr('y', yScale(d.gdp) - ttsize.height * 0.2)
            .attr('fill', 'white')
        })
        .on('mouseout', d => {
          tt.remove()
        })
-
-      //  .append('svg:title')
-      //  .text(d => 'GDP: ' + d.gdp + ' Billion\n' + months[d.date.getMonth()] + ' ' + d.date.getFullYear())
-
-
-      //  .on('mouseover', (d) => {
-      //    tt = svg.append('svg:title')
-      //      .text(d.gdp + '\n' + d.date.getFullYear())
-      //   //  tt = d3.select('body')
-      //   //    .append('div')
-      //   //
-      //   //  tt = svg
-      //   //    .append('rect')
-      //   //    .attr('width', ttsize.width)
-      //   //    .attr('height', ttsize.height)
-      //   //    .attr('fill', 'gray')
-      //   //    .attr('x', xScale(d.date))
-      //   //    .attr('y', yScale(d.gdp) - 100 + 2)
-       //
-       //
-      //     //  .attr('opacity', 0.3)
-      //   //  tt
-      //   //    .append('text')
-      //   //    .text(d.gdp + '\n' + d.date.getFullYear())
-      //   //    .attr('fill', 'red')
-      //   //    .attr('font-size', '60px')
-      //   //   //  .attr('fill', 'white')
-      //   //   //  .attr('class', 'tooltip-text')
-      //   //   //  .append('rect')
-      //   //   // //  .attr('fill', 'black')
-      //   //   //  .append('text')
-      //   //   //  .text(d.gdp + '\n' + d.date.getFullYear())
-      //   //   //  .attr('x', xScale(d.date))
-      //   //   //  .attr('y', yScale(d.gdp))
-      //    //
-      //    //
-      //   //   //  .attr('font-color', 'white')
-      //   //   //  .select('body')
-      //   //   //  .select()
-      //   //   // svg
-      //   //   //  .append('div')
-      //   //   //
-      //   //   //  .style('left', xScale(d.date) + 8 + 'px')
-      //   //   //  .style('top', (yScale(d.gdp) - 46) + 'px')
-      //   //   //  .attr('class', 'tooltip')
-      //   //   //  .html(d.gdp + '<br>' + d.date.getFullYear())
-      //  })
-      //  .on('mouseout', () => {
-      //    tt.remove()
-      //  })
   }
 
   var req = new XMLHttpRequest()
